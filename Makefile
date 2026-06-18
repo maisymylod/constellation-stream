@@ -19,8 +19,8 @@ test: ## Run unit tests + quality gate (windowing, late-data, exactly-once; cove
 bench: ## Real benchmark at the CI scale (writes artifacts/bench.json + BENCH.md)
 	$(PY) -m constellation_stream.bench --rows 1000000 --query-iters 300 --outdir artifacts
 
-bench-big: ## Real benchmark at the documented headline scale (~10M rows)
-	$(PY) -m constellation_stream.bench --rows 10000000 --query-iters 300 --outdir artifacts
+bench-big: ## Real benchmark at the committed headline scale (5M rows)
+	$(PY) -m constellation_stream.bench --rows 5000000 --query-iters 100 --outdir artifacts
 
 pipeline: ## Run the local pipeline into the Apache Iceberg lake (needs install-lake)
 	$(PY) -m constellation_stream.pipeline

@@ -1,0 +1,34 @@
+{
+  "config": {
+    "n_satellites": 200,
+    "samples_per_sat": 25000,
+    "sample_period_ms": 1000,
+    "seed": 42,
+    "anomaly_fraction": 0.08,
+    "late_fraction": 0.02,
+    "late_max_skew_ms": 12000
+  },
+  "hardware": {
+    "platform": "macOS-26.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "python": "3.14.2",
+    "cpu_count": 10
+  },
+  "throughput": {
+    "rows": 5000000,
+    "seconds": 128.80368324997835,
+    "throughput_rows_per_s": 38818.76568930214,
+    "windows": 166800,
+    "late_accepted": 13668,
+    "dead_lettered": 0,
+    "window_updates": 13668
+  },
+  "query_latency": {
+    "backend": "in-memory window results",
+    "iters": 100,
+    "result_rows": 166800,
+    "p50_ms": 24.418458517175168,
+    "p95_ms": 26.86137769487686,
+    "p99_ms": 32.9684706404807
+  }
+}
