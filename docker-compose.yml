@@ -1,0 +1,97 @@
+name: constellation-stream
+
+# Profiles keep the bring-up light. The default `up` starts the ingest + lake +
+# Grafana plane (Redpanda, MinIO, Grafana). The heavier real Flink cluster is
+# behind the `flink` profile so it is opt-in.
+#
+#   docker compose up -d                 # Redpanda + MinIO + Grafana
+#   docker compose --profile flink up -d # + Flink jobmanager/taskmanager
+
+services:
+  redpanda:
+    image: redpandadata/redpanda:v24.2.7
+    command:
+      - redpanda
+      - start
+      - --overprovisioned
+      - --smp=1
+      - --memory=1G
+      - --reserve-memory=0M
+      - --node-id=0
+      - --check=false
+      # INTERNAL for in-network containers, EXTERNAL for host tooling on 19092.
+      - --kafka-addr=INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:19092
+      - --advertise-kafka-addr=INTERNAL://redpanda:9092,EXTERNAL://localhost:19092
+    ports:
+      - "19092:19092"
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -q 'Healthy:.*true'"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  # S3-compatible object store for the Apache Iceberg warehouse.
+  minio:
+    image: minio/minio:RELEASE.2024-10-13T13-34-11Z
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: heliosnet
+      MINIO_ROOT_PASSWORD: heliosnet123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  grafana:
+    image: grafana/grafana:11.2.2
+    environment:
+      GF_SECURITY_ADMIN_USER: heliosnet
+      GF_SECURITY_ADMIN_PASSWORD: heliosnet
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_INSTALL_PLUGINS: yesoreyeram-infinity-datasource
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: ""
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ./grafana/data:/var/lib/grafana/heliosnet-data:ro
+
+  # --- Real Apache Flink cluster (opt-in via the `flink` profile) ----------
+  flink-jobmanager:
+    image: flink:1.19.1-scala_2.12-java11
+    profiles: ["flink"]
+    command: jobmanager
+    environment:
+      FLINK_PROPERTIES: "jobmanager.rpc.address: flink-jobmanager"
+      KAFKA_BOOTSTRAP: redpanda:9092
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./flink:/opt/flink/usrlib:ro
+    depends_on:
+      redpanda:
+        condition: service_healthy
+
+  flink-taskmanager:
+    image: flink:1.19.1-scala_2.12-java11
+    profiles: ["flink"]
+    command: taskmanager
+    environment:
+      FLINK_PROPERTIES: |
+        jobmanager.rpc.address: flink-jobmanager
+        taskmanager.numberOfTaskSlots: 4
+    volumes:
+      - ./flink:/opt/flink/usrlib:ro
+    depends_on:
+      - flink-jobmanager
+
+volumes:
+  minio-data:

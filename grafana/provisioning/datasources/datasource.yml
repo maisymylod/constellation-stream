@@ -1,0 +1,15 @@
+apiVersion: 1
+
+# The window-results table is exported to a static JSON file by
+# `make grafana-export` (python -m constellation_stream.export). Grafana reads it
+# through the Infinity datasource, so the dashboards render with zero database.
+# Point this at a Trino/Postgres-on-Iceberg endpoint instead for the
+# cluster-scale setup documented in docs/architecture.md.
+datasources:
+  - name: Heliosnet Windows (JSON)
+    type: yesoreyeram-infinity-datasource
+    uid: heliosnet-windows
+    access: proxy
+    isDefault: true
+    jsonData:
+      global_queries: []

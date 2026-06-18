@@ -1,0 +1,129 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "id": 1,
+      "title": "Window results (total)",
+      "type": "stat",
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 0 },
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "heliosnet-windows" },
+      "options": { "reduceOptions": { "calcs": ["count"], "fields": "/^sat_id$/" } },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "format": "table",
+          "url": "file:///var/lib/grafana/heliosnet-data/windows.json",
+          "url_options": { "method": "GET" },
+          "root_selector": "",
+          "columns": [{ "selector": "sat_id", "text": "sat_id", "type": "string" }]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Anomalous windows",
+      "type": "stat",
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 0 },
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "heliosnet-windows" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] } } },
+      "options": { "reduceOptions": { "calcs": ["sum"], "fields": "/^is_anomaly$/" } },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "format": "table",
+          "url": "file:///var/lib/grafana/heliosnet-data/windows.json",
+          "url_options": { "method": "GET" },
+          "columns": [{ "selector": "is_anomaly", "text": "is_anomaly", "type": "number" }]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Late records folded into windows",
+      "type": "stat",
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 0 },
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "heliosnet-windows" },
+      "options": { "reduceOptions": { "calcs": ["sum"], "fields": "/^late_count$/" } },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "format": "table",
+          "url": "file:///var/lib/grafana/heliosnet-data/windows.json",
+          "url_options": { "method": "GET" },
+          "columns": [{ "selector": "late_count", "text": "late_count", "type": "number" }]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Max battery temperature per window",
+      "type": "timeseries",
+      "gridPos": { "h": 10, "w": 18, "x": 0, "y": 5 },
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "heliosnet-windows" },
+      "fieldConfig": { "defaults": { "custom": { "drawStyle": "points", "pointSize": 4 }, "unit": "celsius" } },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "format": "table",
+          "url": "file:///var/lib/grafana/heliosnet-data/windows.json",
+          "url_options": { "method": "GET" },
+          "columns": [
+            { "selector": "window_start_ms", "text": "time", "type": "timestamp_epoch" },
+            { "selector": "temp_battery_c_max", "text": "temp_battery_c_max", "type": "number" },
+            { "selector": "sat_id", "text": "sat_id", "type": "string" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Window results (detail)",
+      "type": "table",
+      "gridPos": { "h": 10, "w": 18, "x": 0, "y": 15 },
+      "datasource": { "type": "yesoreyeram-infinity-datasource", "uid": "heliosnet-windows" },
+      "targets": [
+        {
+          "refId": "A",
+          "type": "json",
+          "source": "url",
+          "format": "table",
+          "url": "file:///var/lib/grafana/heliosnet-data/windows.json",
+          "url_options": { "method": "GET" },
+          "columns": [
+            { "selector": "sat_id", "text": "sat_id", "type": "string" },
+            { "selector": "window_start_ms", "text": "window_start", "type": "timestamp_epoch" },
+            { "selector": "sample_count", "text": "samples", "type": "number" },
+            { "selector": "late_count", "text": "late", "type": "number" },
+            { "selector": "anomaly_type", "text": "anomaly", "type": "string" },
+            { "selector": "snr_db_min", "text": "snr_min", "type": "number" },
+            { "selector": "temp_battery_c_max", "text": "temp_max", "type": "number" },
+            { "selector": "attitude_error_deg_max", "text": "att_err_max", "type": "number" }
+          ]
+        }
+      ]
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": ["heliosnet", "constellation-stream"],
+  "templating": { "list": [] },
+  "time": { "from": "2026-01-01T00:00:00.000Z", "to": "2026-01-01T01:00:00.000Z" },
+  "timepicker": {},
+  "timezone": "utc",
+  "title": "Heliosnet — constellation-stream windows",
+  "uid": "heliosnet-stream",
+  "version": 1
+}
