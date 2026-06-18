@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "constellation-stream"
+version = "0.1.0"
+description = "Heliosnet streaming data plane: Kafka -> stateful event-time stream processor -> Apache Iceberg lakehouse -> Grafana, with windowed anomaly aggregation, late-data handling, and an exactly-once sink."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+# Core dev + the benchmark/CI path (no JVM, no cluster).
+dev = ["pytest>=8.0", "pytest-cov>=5.0"]
+# The lakehouse path. Kept optional so unit tests / CI need no native wheels.
+lake = ["pyiceberg[sql-sqlite]>=0.7", "pyarrow>=15.0"]
+# The Kafka producer (cluster path).
+kafka = ["kafka-python>=2.0"]
+
+[project.scripts]
+constellation-stream-bench = "constellation_stream.bench:main"
+constellation-stream-pipeline = "constellation_stream.pipeline:main"
+constellation-stream-produce = "constellation_stream.produce:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.coverage.run]
+source = ["constellation_stream"]
+omit = ["*/produce.py"]

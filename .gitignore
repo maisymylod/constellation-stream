@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+.venv-build/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Run outputs
+warehouse/
+grafana/data/
+
+# Artifacts: bench.json + BENCH.md are committed (the real headline numbers),
+# so artifacts/ is NOT ignored.
+
+# OS
+.DS_Store

@@ -1,0 +1,37 @@
+name: Reproduce benchmark
+
+# Re-derives the committed CI-scale benchmark from a clean checkout and commits
+# the refreshed artifacts/bench.json + BENCH.md ONLY if they genuinely changed.
+# Because the generator and processor are deterministic, a change here means a
+# real drift worth investigating, never a cosmetic or empty commit.
+
+on:
+  schedule:
+    - cron: "17 5 * * 1" # weekly, Monday 05:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - name: Regenerate the CI-scale benchmark
+        run: python -m constellation_stream.bench --rows 1000000 --query-iters 300 --outdir artifacts
+      - name: Commit only on a real change
+        run: |
+          git config user.name "heliosnet-ci[bot]"
+          git config user.email "heliosnet-ci[bot]@users.noreply.github.com"
+          if git diff --quiet -- artifacts/; then
+            echo "No change in benchmark artifacts; nothing to commit."
+            exit 0
+          fi
+          git add artifacts/
+          git commit -m "chore(bench): refresh reproduced benchmark artifacts"
+          git push

@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: Tests + quality gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install (with the Iceberg lake extras so the lake tests run too)
+        run: pip install -e ".[dev,lake]"
+      - name: Unit tests + quality gate (windowing, late-data, exactly-once; coverage >= 85%)
+        run: pytest --cov=constellation_stream --cov-report=term-missing --cov-fail-under=85
+
+  pipeline:
+    name: Small scaled pipeline run + benchmark
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install with the Iceberg lake extras
+        run: pip install -e ".[dev,lake]"
+      - name: Run the local pipeline into an Apache Iceberg table
+        run: python -m constellation_stream.pipeline --sats 50 --samples 240
+      - name: Idempotent re-run (must not change the table)
+        run: python -m constellation_stream.pipeline --sats 50 --samples 240
+      - name: Real benchmark (small scale) -> artifacts/bench.json + BENCH.md
+        run: python -m constellation_stream.bench --rows 200000 --query-iters 100 --lake --outdir artifacts
+      - name: Upload benchmark
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark
+          path: artifacts/
+
+  flink-job:
+    name: PyFlink job parses
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Byte-compile the PyFlink job (no cluster)
+        run: python -m py_compile flink/anomaly_job.py
