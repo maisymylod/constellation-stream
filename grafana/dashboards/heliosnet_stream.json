@@ -123,7 +123,7 @@
   "time": { "from": "2026-01-01T00:00:00.000Z", "to": "2026-01-01T01:00:00.000Z" },
   "timepicker": {},
   "timezone": "utc",
-  "title": "Heliosnet — constellation-stream windows",
+  "title": "Heliosnet: constellation-stream windows",
   "uid": "heliosnet-stream",
   "version": 1
 }
