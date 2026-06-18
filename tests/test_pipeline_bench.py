@@ -35,15 +35,17 @@ def test_pipeline_no_lake_summary_is_consistent():
 
 
 def test_measure_throughput_reports_real_numbers():
-    tp = measure_throughput(SMALL)
+    tp, rows = measure_throughput(SMALL)
     assert tp["rows"] == SMALL.total_records
     assert tp["seconds"] > 0
     assert tp["throughput_rows_per_s"] > 0
     assert tp["windows"] > 0
+    assert len(rows) == tp["windows"]
 
 
 def test_measure_query_latency_inmemory():
-    ql = measure_query_latency(SMALL, iters=5, use_lake=False)
+    _, rows = measure_throughput(SMALL)
+    ql = measure_query_latency(rows, iters=5, use_lake=False)
     assert ql["backend"] == "in-memory window results"
     assert ql["p50_ms"] >= 0
     assert ql["p99_ms"] >= ql["p50_ms"]
