@@ -5,33 +5,33 @@ Every number here is produced by running the code; none is hand-written.
 
 ## Scale actually run
 
-- Records processed: **5,000,000**
-- Window results produced: **166,800**
-- Late records folded in (allowed-lateness): 13,668
-- Window updates re-emitted: 13,668
+- Records processed: **1,000,000**
+- Window results produced: **33,400**
+- Late records folded in (allowed-lateness): 2,743
+- Window updates re-emitted: 2,743
 - Dead-lettered (beyond lateness horizon): 0
 
 ## Ingest / processing throughput
 
 | Metric | Value |
 |---|---|
-| Records | 5,000,000 |
-| Wall time (s) | 128.80 |
-| Throughput (records/s) | **38,819** |
+| Records | 1,000,000 |
+| Wall time (s) | 43.41 |
+| Throughput (records/s) | **23,037** |
 
 ## Query latency (top anomalous window per satellite)
 
-Backend: in-memory window results over 166,800 window rows, 100 iterations.
+Backend: in-memory window results over 33,400 window rows, 300 iterations.
 
 | Percentile | Latency (ms) |
 |---|---|
-| p50 | 24.418 |
-| p95 | 26.861 |
-| p99 | **32.968** |
+| p50 | 2.552 |
+| p95 | 5.123 |
+| p99 | **5.326** |
 
 ## Hardware
 
-- Platform: macOS-26.2-arm64-arm-64bit-Mach-O
-- Machine: arm64
-- CPU count: 10
-- Python: 3.14.2
+- Platform: Linux-6.17.0-1018-azure-x86_64-with-glibc2.39
+- Machine: x86_64
+- CPU count: 4
+- Python: 3.12.13

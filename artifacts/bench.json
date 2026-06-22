@@ -1,7 +1,7 @@
 {
   "config": {
     "n_satellites": 200,
-    "samples_per_sat": 25000,
+    "samples_per_sat": 5000,
     "sample_period_ms": 1000,
     "seed": 42,
     "anomaly_fraction": 0.08,
@@ -9,26 +9,26 @@
     "late_max_skew_ms": 12000
   },
   "hardware": {
-    "platform": "macOS-26.2-arm64-arm-64bit-Mach-O",
-    "machine": "arm64",
-    "python": "3.14.2",
-    "cpu_count": 10
+    "platform": "Linux-6.17.0-1018-azure-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "python": "3.12.13",
+    "cpu_count": 4
   },
   "throughput": {
-    "rows": 5000000,
-    "seconds": 128.80368324997835,
-    "throughput_rows_per_s": 38818.76568930214,
-    "windows": 166800,
-    "late_accepted": 13668,
+    "rows": 1000000,
+    "seconds": 43.40836276100001,
+    "throughput_rows_per_s": 23037.035640018294,
+    "windows": 33400,
+    "late_accepted": 2743,
     "dead_lettered": 0,
-    "window_updates": 13668
+    "window_updates": 2743
   },
   "query_latency": {
     "backend": "in-memory window results",
-    "iters": 100,
-    "result_rows": 166800,
-    "p50_ms": 24.418458517175168,
-    "p95_ms": 26.86137769487686,
-    "p99_ms": 32.9684706404807
+    "iters": 300,
+    "result_rows": 33400,
+    "p50_ms": 2.5523139999990008,
+    "p95_ms": 5.1225775000020235,
+    "p99_ms": 5.3259783600015
   }
 }
