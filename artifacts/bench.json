@@ -16,8 +16,8 @@
   },
   "throughput": {
     "rows": 1000000,
-    "seconds": 43.40836276100001,
-    "throughput_rows_per_s": 23037.035640018294,
+    "seconds": 43.95018814199999,
+    "throughput_rows_per_s": 22753.03115356571,
     "windows": 33400,
     "late_accepted": 2743,
     "dead_lettered": 0,
@@ -27,8 +27,8 @@
     "backend": "in-memory window results",
     "iters": 300,
     "result_rows": 33400,
-    "p50_ms": 2.5523139999990008,
-    "p95_ms": 5.1225775000020235,
-    "p99_ms": 5.3259783600015
+    "p50_ms": 1.2024760000173274,
+    "p95_ms": 1.2716310500010763,
+    "p99_ms": 1.44081956000889
   }
 }

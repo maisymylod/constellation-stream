@@ -16,8 +16,8 @@ Every number here is produced by running the code; none is hand-written.
 | Metric | Value |
 |---|---|
 | Records | 1,000,000 |
-| Wall time (s) | 43.41 |
-| Throughput (records/s) | **23,037** |
+| Wall time (s) | 43.95 |
+| Throughput (records/s) | **22,753** |
 
 ## Query latency (top anomalous window per satellite)
 
@@ -25,9 +25,9 @@ Backend: in-memory window results over 33,400 window rows, 300 iterations.
 
 | Percentile | Latency (ms) |
 |---|---|
-| p50 | 2.552 |
-| p95 | 5.123 |
-| p99 | **5.326** |
+| p50 | 1.202 |
+| p95 | 1.272 |
+| p99 | **1.441** |
 
 ## Hardware
 
